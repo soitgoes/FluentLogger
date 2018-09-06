@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>FluentLogger</RootNamespace>
+    <RootNamespace>FluentLogger.Smtp</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FluentLogger.Interface\FluentLogger.Interfaces.csproj" />
+    <ProjectReference Include="..\FluentLogger\FluentLogger.csproj" />
   </ItemGroup>
 
 </Project>

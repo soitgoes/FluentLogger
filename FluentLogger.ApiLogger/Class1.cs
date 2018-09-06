@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FluentLogger
+namespace FluentLogger.ApiLogger
 {
     public class Class1
     {
