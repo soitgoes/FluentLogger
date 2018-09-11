@@ -16,7 +16,7 @@ namespace FluentLogger
             this.credentials = credentials;
         }
 
-        public virtual void PostData(object obj)
+        protected internal virtual void PostData(object obj)
         {
             var json = Json.Serialize(obj);
             var request = (HttpWebRequest)WebRequest.Create(postUrl);

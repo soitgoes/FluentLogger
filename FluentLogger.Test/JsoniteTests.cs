@@ -7,7 +7,10 @@ namespace Jsonite.Tests
         [Fact]
         public void ShouldSerializeObjectTypes()
         {
-            Jsonite
+            //Arrange & Act
+           var raw = Jsonite.Json.Serialize(new { Name = "Test" });
+
+            Assert.Equal("{ name='Test' }", raw);
         }
     }
 }

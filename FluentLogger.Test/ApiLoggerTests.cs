@@ -2,6 +2,7 @@
 
 namespace FluentLogger.Test
 {
+
     public class ApiLoggerTests
     {
         [Fact]

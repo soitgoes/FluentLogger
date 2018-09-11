@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FluentLogger.Helpers
 {
-    public static class DbHelperscs
+    public static class DbHelpers
     {
 
         public static void AddParameter(this IDbCommand cmd, string parameter, object value)

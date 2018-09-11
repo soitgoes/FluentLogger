@@ -35,7 +35,8 @@ namespace FluentLogger
 
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
-            if (++counter > 1000)
+            const int MINIMUM_LOG_MESSAGE_BEFORE_CLEANUP = 1000;
+            if (++counter > MINIMUM_LOG_MESSAGE_BEFORE_CLEANUP)
             {
                 DeleteOldLogs();
                 counter = 0;

@@ -13,6 +13,14 @@ namespace FluentLogger
         public SplitLogger(string directory, LogLevel minLevel): base(directory, minLevel)
         { 
         }
+
+        /// <summary>
+        /// Record the specified level, message, ex and objectsToSerialize.
+        /// </summary>
+        /// <param name="level">Level.</param>
+        /// <param name="message">Message.</param>
+        /// <param name="ex">Ex.</param>
+        /// <param name="objectsToSerialize">Objects to serialize.</param>
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
             FilenameFx = new Func<string>(() =>

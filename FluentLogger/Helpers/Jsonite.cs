@@ -33,6 +33,7 @@ using System.Text;
 
 [assembly: InternalsVisibleTo("Jsonite.Benchmarks")]
 [assembly: InternalsVisibleTo("Jsonite.Tests")]
+[assembly: InternalsVisibleTo("FluentLogger.Test")]
 
 // ----------------------------------------------------------------------------
 // This is a single file version of a fast, simple and accurate JSON serializer 
