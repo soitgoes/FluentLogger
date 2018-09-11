@@ -30,6 +30,13 @@ namespace FluentLogger
 
         public abstract void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize);
 
+        /// <summary>
+        /// This records the log entry unless it does not meet the minimum specified log level.
+        /// </summary>
+        /// <param name="level">Identifies what type of log entry is being captured.</param>
+        /// <param name="message">Contains the details of the log entry.</param>
+        /// <param name="ex">Stack trace is recorded.</param>
+        /// <param name="objectsToSerialize">Any additional data objects you'd like to persist to the log.</param>
         private void Filter(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
             if (level < minLevel) return;
