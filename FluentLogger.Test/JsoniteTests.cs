@@ -1,13 +1,16 @@
-﻿using Xunit;
-
+﻿using NUnit.Framework;
 namespace Jsonite.Tests
 {
+    [TestFixture]
     public class JsoniteTests
     {
-        [Fact]
+        [Test]
         public void ShouldSerializeObjectTypes()
         {
-            Jsonite
+            //Arrange & Act
+            var raw = Jsonite.Json.Serialize(new { Name = "Test" });
+
+            Assert.AreEqual("{ name='Test' }", raw);
         }
     }
 }

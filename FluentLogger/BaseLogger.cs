@@ -1,6 +1,5 @@
 ﻿using FluentLogger.Interfaces;
 using System;
-using Jsonite;
 
 namespace FluentLogger
 {
@@ -20,9 +19,20 @@ namespace FluentLogger
                  }
              }
              foreach (var obj in objects)
-                 logLine += Json.Serialize(obj) + Environment.NewLine;
+                 logLine += Serialize(obj) + Environment.NewLine;
              return logLine;
          });
+        protected static string Serialize(object obj)
+        {
+            var result = "";
+            var t = obj.GetType();
+            foreach (var prop in t.GetProperties())
+            {
+                result += "\t\t" + prop.Name + " : " + prop.GetValue(obj) + " [" + prop.PropertyType.ToString() + "]"+ Environment.NewLine;
+            }
+            return result;
+        }
+
         public BaseLogger(LogLevel minLevel)
         {
             this.minLevel = minLevel;

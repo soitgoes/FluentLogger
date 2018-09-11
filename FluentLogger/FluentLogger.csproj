@@ -5,6 +5,10 @@
     <RootNamespace>FluentLogger</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;JSONITE_PUBLIC</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\FluentLogger.Interface\FluentLogger.Interfaces.csproj" />
   </ItemGroup>

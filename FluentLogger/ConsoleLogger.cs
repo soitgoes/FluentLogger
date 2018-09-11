@@ -11,6 +11,12 @@ namespace FluentLogger
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
             Console.WriteLine($"[{level.ToString().ToUpper()}] - {message}" + (ex ==  null ? "" : "-" + ex.StackTrace));
+            foreach (var obj in objectsToSerialize)
+            {
+                Console.WriteLine(obj.ToString());
+                Console.WriteLine("-----------");
+                Console.WriteLine(Serialize(obj));
+            }
         }
     }
 }

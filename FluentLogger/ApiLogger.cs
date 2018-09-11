@@ -1,5 +1,4 @@
-﻿using Jsonite;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 
@@ -18,7 +17,7 @@ namespace FluentLogger
 
         public virtual void PostData(object obj)
         {
-            var json = Json.Serialize(obj);
+            var json = Serialize(obj);
             var request = (HttpWebRequest)WebRequest.Create(postUrl);
             request.Method = "POST";
             request.Credentials = this.credentials;
