@@ -21,7 +21,9 @@ namespace FluentLogger
                 Directory.CreateDirectory(directoryForLog);
         }
 
-
+        /// <summary>
+        /// Deletes log files older than 7 days.
+        /// </summary>
         protected void DeleteOldLogs()
         {
             var files = Directory.GetFiles(logDirectory, "log-*").ToList();
