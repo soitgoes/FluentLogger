@@ -14,6 +14,10 @@ namespace FluentLogger
             return "log-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
         });
 
+        /// <summary>
+        /// Initializes a new instance of the "FluentLogger.DailyLogRoller" class.
+        /// Paramaters: string 
+        /// </summary>
         public DailyLogRoller(string directoryForLog, LogLevel minLevel) :base(minLevel)
         {
             logDirectory = directoryForLog;
@@ -21,7 +25,9 @@ namespace FluentLogger
                 Directory.CreateDirectory(directoryForLog);
         }
 
-
+        /// <summary>
+        /// Deletes the old logs.
+        /// </summary>
         protected void DeleteOldLogs()
         {
             var files = Directory.GetFiles(logDirectory, "log-*").ToList();
@@ -33,6 +39,10 @@ namespace FluentLogger
             }
         }
 
+        /// <summary>
+        /// Record the specified level, message, ex and objectsToSerialize.
+        /// Paramaters: LogLevel level, string message, Exception Ex  
+        /// </summary>
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
             if (++counter > 1000)

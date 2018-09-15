@@ -9,6 +9,16 @@ namespace FluentLogger
         {
         }
 
+        /// <summary>
+        /// Creates the errors table
+        /// Columns: id         varchar(39) NOT NULL DEFAULT
+        ///          level      varchar(15) NOT NULL DEFAULT ''
+        ///          message    varchar(600) DEFAULT NULL
+        ///          stacktrace varchar(1000) DEFAULT NULL
+        ///          objects    text
+        ///          timestamp  datetime NOT NULL
+        //           PRIMARY KEY: id
+        /// </summary>
         public override void CreateTable()
         {
             var sql = @"CREATE TABLE `errors` (
@@ -25,6 +35,10 @@ namespace FluentLogger
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Checks to see if the table exists
+        /// Returns: True Or False
+        /// </summary>
         public override bool TableExists()
         {
             try

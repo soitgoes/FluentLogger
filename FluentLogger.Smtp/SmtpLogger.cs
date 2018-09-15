@@ -10,6 +10,10 @@ namespace FluentLogger.Smtp
         private readonly string to;
         private readonly object Json;
 
+        /// <summary>
+        /// Initializes a new instance of the FluentLogger.Smtp.SmtpLogger" class.
+        /// Paramaters: SmtpClient client, string from, string to, LogLevel minLevel) : base(minLeve 
+        /// </summary>
         public SmtpLogger(SmtpClient client, string from, string to, LogLevel minLevel) : base(minLevel)
         {
             this.client = client;
@@ -17,6 +21,10 @@ namespace FluentLogger.Smtp
             this.to = to;
         }
 
+        /// <summary>
+        /// Record the specified level, message, ex and objects.
+        /// LogLevel level, string message, Exception ex = null, params object[] objects 
+        /// </summary>
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objects)
         {
             var mesg = new MailMessage(from, to);
