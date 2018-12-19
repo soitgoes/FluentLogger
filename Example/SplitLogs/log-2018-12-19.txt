@@ -1,0 +1,3 @@
+01:21:36[TRACE] Test Serialization
+		Name : name [System.String]
+

@@ -32,7 +32,7 @@ namespace FluentLogger
             cmd.AddParameter("level", level.ToString());
             cmd.AddParameter("message", message);
             cmd.AddParameter("exception", ex);
-            var objects = Jsonite.Json.Serialize(objectsToSerialize);
+            var objects = Serialize(objectsToSerialize);
             cmd.AddParameter("objects", objects);
             cmd.AddParameter("timestamp", DateTime.UtcNow);
 

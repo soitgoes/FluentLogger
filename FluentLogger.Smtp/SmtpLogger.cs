@@ -8,8 +8,7 @@ namespace FluentLogger.Smtp
         private readonly SmtpClient client;
         private readonly string from;
         private readonly string to;
-        private readonly object Json;
-
+       
         public SmtpLogger(SmtpClient client, string from, string to, LogLevel minLevel) : base(minLevel)
         {
             this.client = client;

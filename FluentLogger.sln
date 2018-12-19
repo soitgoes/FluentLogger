@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentLogger", "FluentLogger\FluentLogger.csproj", "{5A9C8922-308E-45ED-82E9-38DC69A45A4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentLogger", "FluentLogger\FluentLogger.csproj", "{5A9C8922-308E-45ED-82E9-38DC69A45A4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentLogger.Interfaces", "FluentLogger.Interface\FluentLogger.Interfaces.csproj", "{EAA3AC00-71DE-4453-B65B-4816EDBEF62E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentLogger.Interfaces", "FluentLogger.Interface\FluentLogger.Interfaces.csproj", "{EAA3AC00-71DE-4453-B65B-4816EDBEF62E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentLogger.Integrations", "FluentLogger.Integrations\FluentLogger.Integrations.csproj", "{79BAFFD0-2121-450C-BBF8-694171BF1FC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentLogger.Integrations", "FluentLogger.Integrations\FluentLogger.Integrations.csproj", "{79BAFFD0-2121-450C-BBF8-694171BF1FC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentLogger.Smtp", "FluentLogger.Smtp\FluentLogger.Smtp.csproj", "{4F0775B3-A3F4-4A08-8B48-11503D2035FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentLogger.Smtp", "FluentLogger.Smtp\FluentLogger.Smtp.csproj", "{4F0775B3-A3F4-4A08-8B48-11503D2035FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentLogger.Test", "FluentLogger.Test\FluentLogger.Test.csproj", "{53E8AF8F-8562-4204-B2EE-B15D1D0CD13C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentLogger.Test", "FluentLogger.Test\FluentLogger.Test.csproj", "{53E8AF8F-8562-4204-B2EE-B15D1D0CD13C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{FE0AD21E-A26E-4434-9489-29F6C8F89687}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{53E8AF8F-8562-4204-B2EE-B15D1D0CD13C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53E8AF8F-8562-4204-B2EE-B15D1D0CD13C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53E8AF8F-8562-4204-B2EE-B15D1D0CD13C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE0AD21E-A26E-4434-9489-29F6C8F89687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE0AD21E-A26E-4434-9489-29F6C8F89687}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE0AD21E-A26E-4434-9489-29F6C8F89687}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE0AD21E-A26E-4434-9489-29F6C8F89687}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

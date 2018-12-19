@@ -1,11 +1,11 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 
 namespace FluentLogger.Test
 {
-
+    [TestFixture]
     public class ApiLoggerTests
     {
-        [Fact]
+        [Test]
         public void ShouldPostRequest()
         {
             //Arrange
@@ -13,7 +13,7 @@ namespace FluentLogger.Test
             //Act
             logger.Error("Checking error");
             //Assert
-            Assert.True(true);
+            Assert.IsTrue(true);
         }
     }
 }
