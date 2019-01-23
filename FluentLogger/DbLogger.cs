@@ -4,12 +4,13 @@ using System.Data;
 
 namespace FluentLogger
 {
+
     public abstract class DbLogger : BaseLogger
     {
         protected readonly IDbConnection connection;
         protected string TableName { get; set; } = "errors";
 
-        public DbLogger(IDbConnection connection, LogLevel minLevel=LogLevel.Info) : base(minLevel)
+        protected DbLogger(IDbConnection connection, LogLevel minLevel=LogLevel.Info) : base(minLevel)
         {
             this.connection = connection;
         }
