@@ -5,7 +5,13 @@ namespace FluentLogger
 {
     public abstract class BaseLogger : ILog
     {
-        protected readonly LogLevel minLevel;
+        public LogLevel MinLevel
+        {
+            get { return minLevel; }
+            set { minLevel = value; }
+        }
+
+        protected LogLevel minLevel;
         public Func<string, LogLevel, Exception, object[], string> Format { get; set; } = new Func<string, LogLevel, Exception, object[], string>((mesg, logLevel, ex, objects) =>
          {
              var logLine = DateTime.Now.ToString("hh:mm:ss") + "[" + logLevel.ToString().ToUpper() + "] " + mesg + Environment.NewLine;
@@ -29,7 +35,7 @@ namespace FluentLogger
             var t = obj.GetType();
             foreach (var prop in t.GetProperties())
             {
-                result += "\t\t" + prop.Name + " : " + prop.GetValue(obj) + " [" + prop.PropertyType.ToString() + "]"+ Environment.NewLine;
+                result += "\t\t" + prop.Name + " : " + prop.GetValue(obj) + " [" + prop.PropertyType.ToString() + "]" + Environment.NewLine;
             }
             return result;
         }
@@ -48,7 +54,7 @@ namespace FluentLogger
         /// <param name="message">Contains the details of the log entry.</param>
         /// <param name="ex">Stack trace is recorded.</param>
         /// <param name="objectsToSerialize">Any additional data objects you'd like to persist to the log.</param>
-        private void Filter(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
+        protected virtual void Filter(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
             if (level < minLevel) return;
             Record(level, message, ex, objectsToSerialize);
@@ -104,7 +110,7 @@ namespace FluentLogger
         {
         }
 
-    
+
 
         public void Trace(string message, params object[] objects)
         {
@@ -124,7 +130,7 @@ namespace FluentLogger
         public void Warn(string message, Exception ex, params object[] objects)
         {
             Filter(LogLevel.Warn, message, ex, objects);
-         }
+        }
 
         public void Error(string message)
         {

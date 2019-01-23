@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FLuentLogger.Api\FLuentLogger.Api.csproj" />
     <ProjectReference Include="..\FluentLogger.Interface\FluentLogger.Interfaces.csproj" />
     <ProjectReference Include="..\FluentLogger\FluentLogger.csproj" />
   </ItemGroup>

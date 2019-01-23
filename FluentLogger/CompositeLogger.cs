@@ -11,12 +11,11 @@ namespace FluentLogger
             this.loggers = loggers;
         }
 
-
-
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
             foreach (var logger in loggers)
             {
+                if (logger.MinLevel > level) continue;
                 logger.Record(level, message, ex, objectsToSerialize);
             }
         }

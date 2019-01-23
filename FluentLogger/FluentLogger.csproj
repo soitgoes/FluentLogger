@@ -10,7 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FluentLogger.Interface\FluentLogger.Interfaces.csproj" />
+    <Reference Include="FluentLogger.Interfaces">
+      <HintPath>..\..\callpanic\Libraries\FluentLogger.Interfaces.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

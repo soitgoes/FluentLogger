@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentLogger.Smtp", "Fluent
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentLogger.Test", "FluentLogger.Test\FluentLogger.Test.csproj", "{53E8AF8F-8562-4204-B2EE-B15D1D0CD13C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{FE0AD21E-A26E-4434-9489-29F6C8F89687}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example", "Example\Example.csproj", "{FE0AD21E-A26E-4434-9489-29F6C8F89687}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLuentLogger.Api", "FLuentLogger.Api\FLuentLogger.Api.csproj", "{5C6183D2-FE49-460D-81D8-EFDBCD032F0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{FE0AD21E-A26E-4434-9489-29F6C8F89687}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE0AD21E-A26E-4434-9489-29F6C8F89687}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE0AD21E-A26E-4434-9489-29F6C8F89687}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C6183D2-FE49-460D-81D8-EFDBCD032F0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C6183D2-FE49-460D-81D8-EFDBCD032F0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C6183D2-FE49-460D-81D8-EFDBCD032F0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C6183D2-FE49-460D-81D8-EFDBCD032F0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
