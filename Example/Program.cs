@@ -8,6 +8,7 @@ namespace Example
         static void Main(string[] args)
         {
             LogFactory.Init(
+                //Add as many loggers as you like
                 new DailyLogRoller(@"c:\Temp\Logs", LogLevel.Trace),
                 new ConsoleLogger(LogLevel.Trace)
             );

@@ -15,20 +15,31 @@ namespace FluentLogger
                  if (ex is AggregateException)
                  {
                      var aggEx = ex as AggregateException;
-                     logLine += aggEx.Flatten().Message;
+                     aggEx.Handle(x =>
+                     {
+                         logLine += "\t\t\t" + x.Message + Environment.NewLine + x.StackTrace + Environment.NewLine;
+                         return true;
+                     });
                  }
              }
              foreach (var obj in objects)
                  logLine += Serialize(obj) + Environment.NewLine;
              return logLine;
          });
-        protected static string Serialize(object obj)
+        public static string Serialize(object obj)
         {
+            if (obj == null) return string.Empty;
             var result = "";
             var t = obj.GetType();
-            foreach (var prop in t.GetProperties())
+            try
             {
-                result += "\t\t" + prop.Name + " : " + prop.GetValue(obj) + " [" + prop.PropertyType.ToString() + "]"+ Environment.NewLine;
+                foreach (var prop in t.GetProperties())
+                {
+                    result += "\t\t" + prop.Name + " : " + prop.GetValue(obj) + " [" + prop.PropertyType.ToString() + "]" + Environment.NewLine;
+                }
+            }catch(Exception ex)
+            {
+                result += "Seralization failed: " + ex.Message;
             }
             return result;
         }
