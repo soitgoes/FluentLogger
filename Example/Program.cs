@@ -11,8 +11,8 @@ namespace Example
         {
             var smtpClient = new SmtpClient("localhost");
             LogFactory.Init(
-                new DailyLogRoller(@"Logs", LogLevel.Trace),
-                new SplitLogger(@"SplitLogs", LogLevel.Trace),
+                //Add as many loggers as you like
+                new DailyLogRoller(@"c:\Temp\Logs", LogLevel.Trace),
                 new ConsoleLogger(LogLevel.Trace),
                 new SmtpLogger(smtpClient, "errors@fluentlogger.com", "support@somewhere.com", LogLevel.Critical)
             );
@@ -21,10 +21,6 @@ namespace Example
             
 
             logger.Trace("Test Serialization", new { Name = "name" });
-            logger.Info("Testing Info logs");
-            logger.Warn("Warning, Danger Will Robinson");
-            logger.Error("Testing ERror");
-            logger.Critical("Testing Critical");
             logger.Fatal("Fatal Error");
             Console.ReadLine();
         }
