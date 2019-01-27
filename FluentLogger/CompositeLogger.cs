@@ -1,14 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FluentLogger
 {
     public class CompositeLogger : BaseLogger
     {
-        private readonly BaseLogger[] loggers;
+        private List<BaseLogger> loggers = new List<BaseLogger>();
 
         public CompositeLogger(params BaseLogger[] loggers) : base(LogLevel.Trace)
         {
-            this.loggers = loggers;
+            this.loggers.AddRange(loggers);
+        }
+
+        public void AddLogger(BaseLogger logger)
+        {
+            this.loggers.Add(logger);
+        }
+
+        public void RemoveLogger<T>()
+        {
+            this.loggers = this.loggers.Where(x => !(x is T)).ToList();
         }
 
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
