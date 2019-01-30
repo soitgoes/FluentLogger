@@ -32,7 +32,8 @@ namespace FluentLogger.Smtp
         {
             lock (lockObj)
             {
-                string subject = $"[{level.ToString()}] - {message}";
+                message = string.IsNullOrEmpty(message) ? ex?.Message : message; 
+                string subject = $"[{level.ToString()}] {Environment.MachineName} - {message}";
                 string body = $"[{level.ToString()}] - {message}";
                 if (sendAction != null)
                 {
