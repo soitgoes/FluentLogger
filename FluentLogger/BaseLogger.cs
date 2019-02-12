@@ -1,5 +1,7 @@
 ﻿using FluentLogger.Interfaces;
 using System;
+using System.Collections;
+using System.Linq.Expressions;
 
 namespace FluentLogger
 {
@@ -31,11 +33,46 @@ namespace FluentLogger
 
         public static string Serialize(object obj)
         {
-            var result = "";
-            var t = obj.GetType();
-            foreach (var prop in t.GetProperties())
+            try
             {
-                result += "\t\t" + prop.Name + " : " + prop.GetValue(obj) + " [" + prop.PropertyType.ToString() + "]" + Environment.NewLine;
+                if (obj == null) return "null";
+                var result = "";
+              
+                if (obj is IEnumerable)
+                {
+                    foreach (var item in (IEnumerable)obj)
+                    {
+                        result += BuildString(item);
+                    }  
+                }
+                else
+                {
+                    result += BuildString(obj);                
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return "Error attempting to serialize object";
+            }
+        }
+
+        private static string BuildString(object obj)
+        {
+            string result = "";
+            var t = obj.GetType();
+            if (obj is string)
+            {
+                result += "\t\t" + obj + " : " + " [System.String]" +
+                          Environment.NewLine;
+            }
+            else
+            {
+                foreach (var prop in t.GetProperties())
+                {
+                    result += "\t\t" +  prop.Name + " : " + prop.GetValue(obj)  + " [" + prop.PropertyType.ToString() + "]" +
+                              Environment.NewLine;
+                }     
             }
             return result;
         }
