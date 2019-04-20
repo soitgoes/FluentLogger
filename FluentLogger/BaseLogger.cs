@@ -53,7 +53,7 @@ namespace FluentLogger
             }
             catch (Exception ex)
             {
-                return "Error attempting to serialize object";
+                return "Error attempting to serialize object: " + ex.Message;
             }
         }
 
