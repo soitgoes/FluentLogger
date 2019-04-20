@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Net.Mail;
 using FluentLogger;
 using FluentLogger.Smtp;
@@ -19,10 +20,14 @@ namespace Example
             //LogFactory.Init(new ConsoleLogger(LogLevel.Fatal));
             var logger = LogFactory.GetLogger();
             
-
-            logger.Trace("Test Serialization", new { Name = "name" });
-            logger.Fatal("Fatal Error");
-            Console.ReadLine();
+            
+            while (true)
+            {
+                logger.Trace("Test Serialization", new { Name = "name" });
+                logger.Fatal("Fatal Error");
+                Thread.Sleep(1000);
+            }
+            
         }
     }
 }

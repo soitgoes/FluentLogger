@@ -2,6 +2,11 @@
 
 namespace FluentLogger
 {
+    /// <summary>
+    /// Use DailyLogRoller instead this needs refactoring to support multiple processes.  
+    /// If you are using EXACTLY one process by all means use this.
+    /// </summary>
+    [Obsolete]
     public class SplitLogger : DailyLogRoller
     {
         /// <summary>

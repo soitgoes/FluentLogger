@@ -28,7 +28,14 @@ namespace FluentLogger
             foreach (var logger in loggers)
             {
                 if (logger.MinLevel > level) continue;
-                logger.Record(level, message, ex, objectsToSerialize);
+                try
+                {
+                    logger.Record(level, message, ex, objectsToSerialize);
+                }
+                catch (Exception)
+                {
+                    //Nothing to do log failure
+                }
             }
         }
     }
