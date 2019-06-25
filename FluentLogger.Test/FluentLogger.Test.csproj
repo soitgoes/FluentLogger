@@ -7,10 +7,12 @@
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FluentLogger.Interface\FluentLogger.Interfaces.csproj" />
     <ProjectReference Include="..\FluentLogger\FluentLogger.csproj" />
   </ItemGroup>
 

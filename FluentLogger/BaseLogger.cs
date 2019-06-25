@@ -14,7 +14,9 @@ namespace FluentLogger
         }
 
         protected LogLevel minLevel;
-        public Func<string, LogLevel, Exception, object[], string> Format { get; set; } = new Func<string, LogLevel, Exception, object[], string>((mesg, logLevel, ex, objects) =>
+
+        public static Func<string, LogLevel, Exception, object[], string> Format =
+            new Func<string, LogLevel, Exception, object[], string>((mesg, logLevel, ex, objects) =>
          {
              var logLine = DateTime.Now.ToString("hh:mm:ss") + "[" + logLevel.ToString().ToUpper() + "] " + mesg + Environment.NewLine;
              if (ex != null)
@@ -23,31 +25,40 @@ namespace FluentLogger
                  if (ex is AggregateException)
                  {
                      var aggEx = ex as AggregateException;
-                     logLine += aggEx.Flatten().Message;
+                     string lines = "";
+                     foreach (var innerEx in aggEx.InnerExceptions)
+                     {
+                         lines += Format(innerEx.Message, logLevel, innerEx, null);
+                     }
+                     return lines;
                  }
              }
-             foreach (var obj in objects)
-                 logLine += Serialize(obj) + Environment.NewLine;
+             if (objects != null)
+             {
+                 foreach (var obj in objects)
+                     logLine += Serialize(obj) + Environment.NewLine;
+             }
+            
              return logLine;
          });
-
+        
         public static string Serialize(object obj)
         {
             try
             {
                 if (obj == null) return "null";
                 var result = "";
-              
+
                 if (obj is IEnumerable)
                 {
                     foreach (var item in (IEnumerable)obj)
                     {
                         result += BuildString(item);
-                    }  
+                    }
                 }
                 else
                 {
-                    result += BuildString(obj);                
+                    result += BuildString(obj);
                 }
                 return result;
             }
@@ -70,9 +81,9 @@ namespace FluentLogger
             {
                 foreach (var prop in t.GetProperties())
                 {
-                    result += "\t\t" +  prop.Name + " : " + prop.GetValue(obj)  + " [" + prop.PropertyType.ToString() + "]" +
+                    result += "\t\t" + prop.Name + " : " + prop.GetValue(obj) + " [" + prop.PropertyType.ToString() + "]" +
                               Environment.NewLine;
-                }     
+                }
             }
             return result;
         }
