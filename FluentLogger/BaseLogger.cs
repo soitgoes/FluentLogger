@@ -74,7 +74,7 @@ namespace FluentLogger
             var t = obj.GetType();
             if (obj is string)
             {
-                result += "\t\t" + obj + " : " + " [System.String]" +
+                result += "\t\t\"" + obj + "\" : " + " [System.String]" +
                           Environment.NewLine;
             }
             else
