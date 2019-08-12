@@ -70,6 +70,7 @@ namespace FluentLogger
 
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
+            if (level < this.MinLevel) return;
             try
             {
                 if (string.IsNullOrEmpty(message))
