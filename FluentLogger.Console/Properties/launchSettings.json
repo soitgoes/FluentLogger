@@ -2,7 +2,7 @@
   "profiles": {
     "FluentLogger.Console": {
       "commandName": "Project",
-      "commandLineArgs": "log.txt"
+      "commandLineArgs": "C:\\Temp\\Logs"
     }
   }
 }

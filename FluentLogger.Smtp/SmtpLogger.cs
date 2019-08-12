@@ -11,6 +11,7 @@ namespace FluentLogger.Smtp
         private readonly string to;
         private readonly object lockObj = new object();
         private readonly Action<string, string> sendAction;
+        private readonly string sourceSite;
 
         public SmtpLogger(SmtpClient client, string from, string to, LogLevel minLevel) : base(minLevel)
         {
@@ -18,6 +19,21 @@ namespace FluentLogger.Smtp
             this.from = from;
             this.to = to;
         }
+
+        /// <summary>
+        /// Be cognisant that using this logger should only be used on rarish messages.  
+        /// Using it on anything that happens more often could compromise sendability of whatever you are using for email
+        /// </summary>
+        /// <param name="client">The Smtp client used to send the message with error.  Should have auth configured if necessary</param>
+        /// <param name="from">The email address your sending from</param>
+        /// <param name="to">The email address your sending to</param>
+        /// <param name="minLevel">The minimum log level threshold</param>
+        /// <param name="sourceSite">(optional) but recommended.  If you have more than one server it's nice to know which site reported this message.</param>
+        public SmtpLogger(SmtpClient client, string from, string to, LogLevel minLevel, string sourceSite) : this(client, from, to, minLevel)
+        {
+            this.sourceSite = sourceSite;
+        }
+
         /// <summary>
         /// Implement your own send action.  We'll compute the subject and body for you.
         /// </summary>
@@ -33,7 +49,7 @@ namespace FluentLogger.Smtp
             lock (lockObj)
             {
                 message = string.IsNullOrEmpty(message) ? ex?.Message : message; 
-                string subject = $"[{level.ToString()}] {Environment.MachineName} - {message}";
+                string subject = $"[{level.ToString()}] {Environment.MachineName}/{sourceSite} - {message}";
                 string body = $"[{level.ToString()}] - {message}";
                 if (sendAction != null)
                 {

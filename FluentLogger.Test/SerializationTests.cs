@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace FluentLogger.Test
@@ -21,6 +22,24 @@ namespace FluentLogger.Test
             IEnumerable<string> strs = new string[] { "hi", "There" };
             var raw = BaseLogger.Serialize(strs);
             Assert.AreEqual("\t\thi :  [System.String]\r\n\t\tThere :  [System.String]\r\n", raw);
+        }
+
+        [Test]
+        public  void ShouldEnumerateStackTracesWithMoreThanOneError()
+        {
+            var bl = new ConsoleLogger(LogLevel.Info);
+
+            MultipleErrors().ContinueWith(c =>
+            {
+                var str = BaseLogger.Format("", LogLevel.Info, c.Exception, null);
+                Assert.IsTrue(str.Contains("Exception 1"));
+            }).Wait();    
+        }
+
+        public async Task MultipleErrors()
+        {
+            await Task.WhenAll(Task.Run(() => throw new Exception("Exception 1")),
+                Task.Run(() => throw new Exception("Exception 2")));
         }
     }
 }

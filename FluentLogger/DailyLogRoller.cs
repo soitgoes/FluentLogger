@@ -72,14 +72,16 @@ namespace FluentLogger
                             }
 
                         }
-
-                        using (var destinationFile = File.OpenWrite(destination))
+                        if (entries.Any())
                         {
-                            using (var sw = new StreamWriter(destinationFile))
+                            using (var destinationFile = File.OpenWrite(destination))
                             {
-                                foreach (var key in entries.Keys)
+                                using (var sw = new StreamWriter(destinationFile))
                                 {
-                                    sw.Write(entries[key] + "\r\n");
+                                    foreach (var key in entries.Keys)
+                                    {
+                                        sw.Write(entries[key] + "\r\n");
+                                    }
                                 }
                             }
                         }
