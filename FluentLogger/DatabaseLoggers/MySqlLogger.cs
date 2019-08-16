@@ -11,7 +11,7 @@ namespace FluentLogger
 
         public override void CreateTable()
         {
-            var sql = @"CREATE TABLE `errors` (
+            var sql = $@"CREATE TABLE `{TableName}` (
                           `id` varchar(39) NOT NULL DEFAULT '',
                           `level` varchar(15) NOT NULL DEFAULT '',
                           `message` varchar(600) DEFAULT NULL,
@@ -30,7 +30,7 @@ namespace FluentLogger
             try
             {
                 var cmd = connection.CreateCommand();
-                cmd.CommandText = @"SELECT 1 FROM testtable LIMIT 1";
+                cmd.CommandText = $@"SELECT 1 FROM `{TableName}` LIMIT 1";
                 cmd.ExecuteScalar();
                 return true;
             }
