@@ -8,8 +8,7 @@ namespace FluentLogger
     public abstract class DbLogger : BaseLogger
     {
         protected readonly IDbConnection connection;
-        private readonly string _tableName = "errors";
-        protected string TableName { get { return _tableName; }  }
+        protected string TableName { get; private set; } = "errors";
 
         protected DbLogger(IDbConnection connection, LogLevel minLevel=LogLevel.Info) : base(minLevel)
         {
@@ -17,7 +16,7 @@ namespace FluentLogger
         }
         protected DbLogger(IDbConnection connection, LogLevel minLevel = LogLevel.Info, string tableName="errors"): this(connection, minLevel)
         {
-            _tableName = tableName;
+            TableName = tableName;
         }
         public void Init()
         {
