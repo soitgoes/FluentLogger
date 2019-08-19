@@ -1,18 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net462;netcoreapp2.2</TargetFrameworks>
     <RootNamespace>FluentLogger.Smtp</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FluentLogger\FluentLogger.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="FluentLogger.Interfaces">
-      <HintPath>..\..\MaxThrottleNotifications\Libraries\FluentLogger.Interfaces.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

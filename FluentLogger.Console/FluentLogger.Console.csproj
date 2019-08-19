@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FluentLogger.Interface\FluentLogger.Interfaces.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="log.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

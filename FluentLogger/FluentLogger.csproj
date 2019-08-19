@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net462;netcoreapp2.2</TargetFrameworks>
     <RootNamespace>FluentLogger</RootNamespace>
     <Version>1.2.0</Version>
   </PropertyGroup>
@@ -9,11 +9,5 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE;JSONITE_PUBLIC</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Reference Include="FluentLogger.Interfaces">
-      <HintPath>..\..\callpanic\Libraries\FluentLogger.Interfaces.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
 </Project>
