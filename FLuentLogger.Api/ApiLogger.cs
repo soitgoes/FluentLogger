@@ -19,21 +19,7 @@ namespace FluentLogger
         protected internal virtual void PostData(object obj)
         {
             var json = JsonConvert.SerializeObject(obj);
-            //var request = (HttpWebRequest)WebRequest.Create(postUrl);
-            //request.Method = "POST";
-            ////request.Credentials = this.credentials;
-            //using (var stream = request.GetRequestStream())
-            //{
-            //    using (var sr = new StreamWriter(stream))
-            //    {
-            //        sr.Write(json);
-            //        var response = request.GetResponse();
-
-            //    }
-            //}
-
             var response =  PostRaw(json);
-
         }
         protected string PostRaw( string rawBody)
         {
@@ -54,7 +40,7 @@ namespace FluentLogger
                 {
                     using (var sr = new StreamReader(stream))
                     {
-                        var str = sr.ReadToEnd().Replace("\\\"", "\"");
+                        var str = sr.ReadToEnd();
                         return str;
                     }
                 }

@@ -1,12 +1,14 @@
 ﻿using FluentLogger.Interfaces;
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace FluentLogger
 {
     public abstract class BaseLogger : ILog
     {
+        protected static int pid = Process.GetCurrentProcess().Id;
         public LogLevel MinLevel
         {
             get { return minLevel; }

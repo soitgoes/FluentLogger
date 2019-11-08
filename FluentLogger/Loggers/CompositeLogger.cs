@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace FluentLogger
 {
-    public class CompositeLogger : BaseLogger
+    internal class CompositeLogger : BaseLogger
     {
         private List<BaseLogger> loggers = new List<BaseLogger>();
 

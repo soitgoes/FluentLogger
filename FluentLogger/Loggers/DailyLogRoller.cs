@@ -11,6 +11,9 @@ using System.Globalization;
 
 namespace FluentLogger
 {
+
+
+    [Obsolete("Use MaximumFileSizeRoller Instead")]
     public class DailyLogRoller : BaseLogger
     {
         protected object hold = new object();
@@ -18,11 +21,11 @@ namespace FluentLogger
         protected static string filePath = null;
         protected int counter = 0;
         protected static string day = null;
-        protected static int pid = Process.GetCurrentProcess().Id;
+       
 
         public Func<string> FilenameFx = new Func<string>(() =>
         {
-            return $"log-" + DateTime.Now.ToString("yyyy-MM-dd") + $".{pid}.txt";
+            return $"log-" + DateTime.Now.ToString("yyyy-MM-dd") + $"[{pid}].txt";
         });
 
         public DailyLogRoller(string directoryForLog, LogLevel minLevel) : base(minLevel)
@@ -33,7 +36,7 @@ namespace FluentLogger
         }
         public async void Cleanup()
         {
-            await CombinePidFiles().ContinueWith(x => DeleteOldLogs());
+            await CombinePidFiles().ContinueWith((x) => DeleteOldLogs());
         }
 
         void CopyStream(Stream destination, Stream source)
@@ -52,9 +55,9 @@ namespace FluentLogger
                 {
                     var random = new Random(pid);
                     var seconds = random.Next(0, 20);
-                    Thread.Sleep(TimeSpan.FromSeconds(seconds));//wait a random amount of time to avoid conflict?
+                    Thread.Sleep(TimeSpan.FromSeconds(seconds));//wait a random amount of time to avoid conflict with another instance
                     var yesterday = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
-                    var files = Directory.GetFiles(logDirectory, $"log-{yesterday}.*");
+                    var files = Directory.GetFiles(logDirectory, $"log-{yesterday}*");
                     var destination = Path.Combine(logDirectory, $"log-{yesterday}.txt");
                     if (!File.Exists(destination))
                     {
@@ -105,8 +108,6 @@ namespace FluentLogger
                 try
                 {
                     var files = Directory.GetFiles(logDirectory, "log-*").AsEnumerable();
-                    var pattern = new Regex(@"log\-[^.]+\.txt$");
-                    files = files.Where(x => pattern.IsMatch(x)).ToList();
                     if (files.Count() > 7)
                     {
                         var toBeDeleted = files.OrderByDescending(x => x).Skip(7);
