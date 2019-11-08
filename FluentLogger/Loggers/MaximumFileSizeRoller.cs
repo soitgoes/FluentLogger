@@ -14,6 +14,7 @@ namespace FluentLogger
         private readonly string logDirectory;
         private readonly int maximumBytesPerFile;
         private readonly int numberOfFilesToKeep;
+        private readonly string prefix;
         private readonly object hold = new object();
         private readonly string filename;
         private readonly string filePath;
@@ -22,23 +23,74 @@ namespace FluentLogger
         /// </summary>
         /// <param name="logDirectory"></param>
         /// <param name="minLevel">Any message beneath the threshold is ignored</param>
+        /// <param name="strict">throws Exception if Directory doesn't exists or the user doesn't have permissions</param>
         /// <param name="maximumMgPerFile">Size in Megabytes of each log file.  Defaults to 5</param>
         /// <param name="numberOfFilesToKeep">The number of log files to retain.  Defaults to 5</param>
-        public MaximumFileSizeRoller(string logDirectory, LogLevel minLevel, int maximumMgPerFile=5, int numberOfFilesToKeep=5) : base(minLevel)
+        /// <param name="fileNamePrefix">The filename prefix for the log file.  Defaults to log-[<pid>]</param>
+        public MaximumFileSizeRoller(string logDirectory, LogLevel minLevel, bool strict = false, int maximumMgPerFile=5, int numberOfFilesToKeep=5, string filenamePrefix = null) : base(minLevel)
         {
+            if (strict)
+                AssertDirectoryExistsAndWritable(logDirectory);
+            else
+                EnsureDirectoryExists(logDirectory);
             this.logDirectory = logDirectory;
             this.maximumBytesPerFile = maximumMgPerFile * 1024 * 1024;
             this.numberOfFilesToKeep = numberOfFilesToKeep;
-            this.filename = $"log-[{pid}].current.txt";
+            this.prefix = filenamePrefix ?? $"log-[{pid}]";
+            this.filename = $"{prefix}.current.txt";
             this.filePath = Path.Combine(logDirectory, filename);
         }
-        
+
         /// <summary>
-        /// Shift files and move current to 0
+        /// If directory doesn't exist attempt to create and fail silent if we can't 
+        /// </summary>
+        /// <param name="dir"></param>
+        protected void EnsureDirectoryExists(string dir)
+        {
+            if (Directory.Exists(dir)) return;
+            try
+            {
+                Directory.CreateDirectory(dir);
+            }catch(Exception)
+            {
+                //with strict false we fail silent
+            }
+        }
+
+        protected void AssertDirectoryExistsAndWritable(string dir)
+        {
+            if (!Directory.Exists(dir)) throw new DirectoryNotFoundException("MaximumFileSizeRoller: Directory not found:" + dir);
+            if (!IsDirectoryWritable(dir)) throw new UnauthorizedAccessException("User does not have permission to write to configured directory:" + dir);
+        }
+        private bool IsDirectoryWritable(string dirPath, bool throwIfFails = false)
+        {
+            try
+            {
+                using (FileStream fs = File.Create(
+                    Path.Combine(
+                        dirPath,
+                        Path.GetRandomFileName()
+                    ),
+                    1,
+                    FileOptions.DeleteOnClose)
+                )
+                { }
+                return true;
+            }
+            catch
+            {
+                if (throwIfFails)
+                    throw;
+                else
+                    return false;
+            }
+        }
+        /// <summary>
+        /// Shift files and move current to 1
         /// </summary>
         private void RollLogs()
         {
-            var files = Directory.GetFiles(logDirectory, $"log-[{pid}].*.txt");
+            var files = Directory.GetFiles(logDirectory, $"{prefix}.*.txt");
             var dict = new Dictionary<int, string>();
             foreach (var file in files)
             {
@@ -60,7 +112,7 @@ namespace FluentLogger
                     }
                 }
                 var src =    Path.Combine(logDirectory, dict[number]);
-                var target = Path.Combine(logDirectory,  $"log-[{pid}].{number+1}.txt");
+                var target = Path.Combine(logDirectory,  $"{prefix}.{number+1}.txt");
                 lock (hold)
                 {
                     if (File.Exists(src))
@@ -69,7 +121,7 @@ namespace FluentLogger
             }
             lock (hold)
             {
-                var target = Path.Combine(logDirectory, $"log-[{pid}].1.txt");
+                var target = Path.Combine(logDirectory, $"{prefix}.1.txt");
                 File.Move(this.filePath, target);
             }
         }

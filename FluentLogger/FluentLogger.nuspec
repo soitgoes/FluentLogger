@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>FluentLogger</id>
+    <version>1.4.0</version>
+    <title>FluentLogger</title>
+    <authors>Martin Murphy</authors>
+    <owners>Martin Murphy</owners>
+    <licenseUrl>https://en.wikipedia.org/wiki/MIT_License</licenseUrl>
+    <projectUrl>http://github.com/soitgoes/FluentLogger</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A logger without the noise.  No xml configs allowed.</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>Logger C#</tags>
+  </metadata>
+
+</package>
