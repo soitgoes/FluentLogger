@@ -20,7 +20,7 @@ namespace FluentLogger
         public static Func<string, LogLevel, Exception, object[], string> Format =
             new Func<string, LogLevel, Exception, object[], string>((mesg, logLevel, ex, objects) =>
          {
-             var logLine = DateTime.Now.ToString("hh:mm:ss") + "[" + logLevel.ToString().ToUpper() + "] " + mesg + Environment.NewLine;
+             var logLine = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss") + "[" + logLevel.ToString().ToUpper() + "] " + mesg + Environment.NewLine;
              if (ex != null)
              {
                  logLine += "\t\t\t" + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine;

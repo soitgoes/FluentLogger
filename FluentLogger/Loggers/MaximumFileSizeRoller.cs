@@ -12,6 +12,7 @@ namespace FluentLogger
     public class MaximumFileSizeRoller : BaseLogger
     {
         private readonly string logDirectory;
+        private readonly Func<string> logHeader;
         private readonly int maximumBytesPerFile;
         private readonly int numberOfFilesToKeep;
         private readonly string prefix;
@@ -23,22 +24,25 @@ namespace FluentLogger
         /// </summary>
         /// <param name="logDirectory"></param>
         /// <param name="minLevel">Any message beneath the threshold is ignored</param>
+        /// <param name="logHeader">Message to start each log file after roll</param>
         /// <param name="strict">throws Exception if Directory doesn't exists or the user doesn't have permissions</param>
         /// <param name="maximumMgPerFile">Size in Megabytes of each log file.  Defaults to 5</param>
         /// <param name="numberOfFilesToKeep">The number of log files to retain.  Defaults to 5</param>
         /// <param name="fileNamePrefix">The filename prefix for the log file.  Defaults to log-[<pid>]</param>
-        public MaximumFileSizeRoller(string logDirectory, LogLevel minLevel, bool strict = false, int maximumMgPerFile=5, int numberOfFilesToKeep=5, string filenamePrefix = null) : base(minLevel)
+        public MaximumFileSizeRoller(string logDirectory, LogLevel minLevel, Func<string> logHeader, bool strict = false, int maximumMgPerFile = 5, int numberOfFilesToKeep = 5, string filenamePrefix = null) : base(minLevel)
         {
             if (strict)
                 AssertDirectoryExistsAndWritable(logDirectory);
             else
                 EnsureDirectoryExists(logDirectory);
             this.logDirectory = logDirectory;
+            this.logHeader = logHeader;
             this.maximumBytesPerFile = maximumMgPerFile * 1024 * 1024;
             this.numberOfFilesToKeep = numberOfFilesToKeep;
             this.prefix = filenamePrefix ?? $"log-[{pid}]";
             this.filename = $"{prefix}.current.txt";
             this.filePath = Path.Combine(logDirectory, filename);
+            RecordHeader();
         }
 
         /// <summary>
@@ -51,7 +55,8 @@ namespace FluentLogger
             try
             {
                 Directory.CreateDirectory(dir);
-            }catch(Exception)
+            }
+            catch (Exception)
             {
                 //with strict false we fail silent
             }
@@ -97,9 +102,9 @@ namespace FluentLogger
                 if (file.Contains("current")) continue;
                 var parts = file.Split('.');
                 int number = int.Parse(parts[parts.Length - 2]);
-                dict.Add(number, file);
+                dict.Add(number, new FileInfo(file).Name);
             }
-            
+
             foreach (var number in dict.Keys.OrderByDescending(x => x))
             {
                 if (number >= numberOfFilesToKeep)
@@ -111,8 +116,8 @@ namespace FluentLogger
                             File.Delete(pathToDelete);
                     }
                 }
-                var src =    Path.Combine(logDirectory, dict[number]);
-                var target = Path.Combine(logDirectory,  $"{prefix}.{number+1}.txt");
+                var src = Path.Combine(logDirectory, dict[number]);
+                var target = Path.Combine(logDirectory, $"{prefix}.{number + 1}.txt");
                 lock (hold)
                 {
                     if (File.Exists(src))
@@ -122,10 +127,21 @@ namespace FluentLogger
             lock (hold)
             {
                 var target = Path.Combine(logDirectory, $"{prefix}.1.txt");
+
                 File.Move(this.filePath, target);
+
+            }
+            RecordHeader();
+
+        }
+        public void RecordHeader()
+        {
+            lock (hold)
+            {
+                File.AppendAllText(filePath, $"-------{logHeader()}-------" + Environment.NewLine);
             }
         }
-        
+
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
             try
