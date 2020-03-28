@@ -20,14 +20,13 @@ namespace Example
                 //Daily is deprecated, use MaximumFileSizeRoller instead
                 //new DailyLogRoller(@"DailyLogRoller", LogLevel.Trace),
                 new MaximumFileSizeRoller(userLogDir, LogLevel.Trace, headerFx, false, 2, 3, "log")
-             //   ,new ConsoleLogger(LogLevel.Trace)
+                ,new ConsoleLogger(LogLevel.Trace)
                // ,new SmtpLogger(smtpClient, "errors@fluentlogger.com", "support@somewhere.com", LogLevel.Critical)
             );
-            //LogFactory.Init(new ConsoleLogger(LogLevel.Fatal));
             var logger = LogFactory.GetLogger();
 
-            
-                while (true)
+            int i = 0;
+                while (i++ < 20)
                 {
                     logger.Trace("Test Serialization", new { Name = "name" });
                     logger.Fatal("Fatal Error");
