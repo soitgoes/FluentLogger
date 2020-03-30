@@ -21,7 +21,7 @@ namespace FluentLogger.Test
         {
             IEnumerable<string> strs = new string[] { "hi", "There" };
             var raw = BaseLogger.Serialize(strs);
-            Assert.AreEqual("\t\thi :  [System.String]\r\n\t\tThere :  [System.String]\r\n", raw);
+            Assert.AreEqual("\t\t\"hi\" :  [System.String]\r\n\t\t\"There\" :  [System.String]\r\n", raw);
         }
 
         [Test]
