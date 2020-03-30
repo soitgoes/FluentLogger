@@ -60,7 +60,7 @@ namespace FluentLogger
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                // throw ex;
             }

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net462;netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;</TargetFrameworks>
     <RootNamespace>FluentLogger</RootNamespace>
     <Version>1.2.0</Version>
   </PropertyGroup>
@@ -10,4 +10,9 @@
     <DefineConstants>DEBUG;TRACE;JSONITE_PUBLIC</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="SyslogNet.Client">
+      <HintPath>..\Libraries\SyslogNet.Client.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

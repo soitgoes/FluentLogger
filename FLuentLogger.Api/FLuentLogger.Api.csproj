@@ -12,10 +12,4 @@
     <ProjectReference Include="..\FluentLogger\FluentLogger.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="FluentLogger.Interfaces">
-      <HintPath>..\..\MaxThrottleNotifications\Libraries\FluentLogger.Interfaces.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

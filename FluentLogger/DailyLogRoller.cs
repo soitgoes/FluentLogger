@@ -22,7 +22,7 @@ namespace FluentLogger
 
         public Func<string> FilenameFx = new Func<string>(() =>
         {
-            return $"log-" + DateTime.Now.ToString("yyyy-MM-dd") + $".{pid}.txt";
+            return $"log-" + DateTime.UtcNow.ToString("yyyy-MM-dd") + $".{pid}.txt";
         });
 
         public DailyLogRoller(string directoryForLog, LogLevel minLevel) : base(minLevel)
@@ -91,7 +91,7 @@ namespace FluentLogger
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //do nothing.
                 }
@@ -141,7 +141,7 @@ namespace FluentLogger
                     File.AppendAllText(filePath, logLine);
                 }
             }
-            catch (Exception ex1)
+            catch (Exception)
             {
                 //Nothing to do write to file isn't working
             }

@@ -41,5 +41,12 @@ namespace FluentLogger.Test
             await Task.WhenAll(Task.Run(() => throw new Exception("Exception 1")),
                 Task.Run(() => throw new Exception("Exception 2")));
         }
+
+        [Test]
+        public void ShouldWriteSyslog()
+        {
+            var logger = new SysLogger(LogLevel.Trace, "TestProject", "localhost", 514);
+            logger.Info("Message");
+        }
     }
 }

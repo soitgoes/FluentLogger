@@ -3,6 +3,8 @@ using System;
 using System.Collections;
 using System.Linq.Expressions;
 
+
+
 namespace FluentLogger
 {
     public abstract class BaseLogger : ILog
@@ -18,26 +20,26 @@ namespace FluentLogger
         public static Func<string, LogLevel, Exception, object[], string> Format =
             new Func<string, LogLevel, Exception, object[], string>((mesg, logLevel, ex, objects) =>
          {
-             var logLine = DateTime.Now.ToString("hh:mm:ss") + "[" + logLevel.ToString().ToUpper() + "] " + mesg + Environment.NewLine;
-             if (ex != null)
-             {
-                 logLine += "\t\t\t" + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine;
-                 if (ex is AggregateException)
-                 {
-                     var aggEx = ex as AggregateException;
-                     string lines = "";
-                     foreach (var innerEx in aggEx.InnerExceptions)
-                     {
-                         lines += Format(innerEx.Message, logLevel, innerEx, null);
-                     }
-                     return lines;
-                 }
-             }
-             if (objects != null)
-             {
-                 foreach (var obj in objects)
-                     logLine += Serialize(obj) + Environment.NewLine;
-             }
+             var logLine = DateTime.UtcNow.ToLongTimeString() + "[" + logLevel.ToString().ToUpper() + "] " + mesg + Environment.NewLine;
+            if (ex != null)
+            {
+                logLine += "\t\t\t" + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine;
+                if (ex is AggregateException)
+                {
+                    var aggEx = ex as AggregateException;
+                    string lines = "";
+                    foreach (var innerEx in aggEx.InnerExceptions)
+                    {
+                        lines += Format(innerEx.Message, logLevel, innerEx, null);
+                    }
+                    return lines;
+                }
+            }
+            if (objects != null)
+            {
+                foreach (var obj in objects)
+                    logLine += Serialize(obj) + Environment.NewLine;
+            }
             
              return logLine;
          });
