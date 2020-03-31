@@ -39,7 +39,7 @@ namespace FluentLogger
             this.logHeader = logHeader;
             this.maximumBytesPerFile = maximumMgPerFile * 1024 * 1024;
             this.numberOfFilesToKeep = numberOfFilesToKeep;
-            this.prefix = filenamePrefix ?? $"log-[{pid}]";
+            this.prefix = filenamePrefix ?? $"log-{pid}";
             this.filename = $"{prefix}.current.txt";
             this.filePath = Path.Combine(logDirectory, filename);
             RecordHeader();
