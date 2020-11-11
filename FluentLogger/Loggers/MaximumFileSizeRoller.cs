@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FluentLogger
 {
@@ -9,7 +11,7 @@ namespace FluentLogger
     /// The maximum file size roller log roles to the next log when the specified filesize is reached or exceeded.
     /// This will put a hard upper limit on the file size of each log and 
     /// </summary>
-    public class MaximumFileSizeRoller : BaseLogger
+    public class MaximumFileSizeRoller : BaseLogger, IDisposable
     {
         private readonly string logDirectory;
         private readonly Func<string> logHeader;
@@ -19,7 +21,8 @@ namespace FluentLogger
         private readonly object hold = new object();
         private readonly string filename;
         private readonly string filePath;
-
+        private readonly StringBuilder sb;
+        private readonly StreamWriter sw;
         /// <summary>
         /// </summary>
         /// <param name="logDirectory"></param>
@@ -42,7 +45,16 @@ namespace FluentLogger
             this.prefix = filenamePrefix ?? $"log-{pid}";
             this.filename = $"{prefix}.current.txt";
             this.filePath = Path.Combine(logDirectory, filename);
+            this.sb = new StringBuilder();
+            this.sw = new StreamWriter(this.filePath);
+            TextWriter.Synchronized(this.sw);
             RecordHeader();
+        }
+        public override void Dispose()
+        {
+            this.sw.Flush();
+            this.sw.Dispose();
+            base.Dispose();
         }
 
         /// <summary>
@@ -136,10 +148,7 @@ namespace FluentLogger
         }
         public void RecordHeader()
         {
-            lock (hold)
-            {
-                File.AppendAllText(filePath, $"-------{logHeader()}-------" + Environment.NewLine);
-            }
+            this.sb.AppendLine($"-------{logHeader()}-------" + Environment.NewLine);
         }
 
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
@@ -154,10 +163,10 @@ namespace FluentLogger
                 }
 
                 var logLine = Format(message, level, ex, objectsToSerialize);
-                lock (hold)
-                {
-                    File.AppendAllText(filePath, logLine);
-                }
+                sb.Append(logLine);
+                sw.Write(sb.ToString());
+                sw.Flush();
+                sb.Clear();
             }
             catch (Exception ex1)
             {

@@ -30,8 +30,7 @@ namespace FluentLogger
             }
             var mesg = new SyslogMessage(ConvertLevel(level), appName, message);
             var serializer = new SyslogRfc5424MessageSerializer();
-            serializer.Serialize(mesg);
-
+            serializer.Serialize(mesg);            
             client.Send(mesg, serializer);
         }
 
