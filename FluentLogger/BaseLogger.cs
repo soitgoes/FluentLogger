@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq.Expressions;
 
 
@@ -22,7 +23,7 @@ namespace FluentLogger
         public static Func<string, LogLevel, Exception, object[], string> Format =
             new Func<string, LogLevel, Exception, object[], string>((mesg, logLevel, ex, objects) =>
          {
-             var logLine = DateTime.UtcNow.ToLongTimeString() + "[" + logLevel.ToString().ToUpper() + "] " + mesg + Environment.NewLine;
+             var logLine = GetDate() + "[" + logLevel.ToString().ToUpper() + "] " + mesg + Environment.NewLine;
             if (ex != null)
             {
                 logLine += "\t\t\t" + ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine;
@@ -45,7 +46,11 @@ namespace FluentLogger
             
              return logLine;
          });
-        
+        public static string GetDate()
+        {
+            var utcOffset = TimeZoneInfo.Local.GetUtcOffset(DateTime.Now);
+            return DateTime.UtcNow.ToString("HH:mm:ss") +  " UTC, " + DateTime.Now.ToShortTimeString() + " " + TimeZoneInfo.Local.DisplayName;
+        }
         public static string Serialize(object obj)
         {
             try
