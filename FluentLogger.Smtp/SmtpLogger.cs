@@ -13,7 +13,7 @@ namespace FluentLogger.Smtp
         private readonly Action<string, string> sendAction;
         private readonly string sourceSite;
 
-        public SmtpLogger(SmtpClient client, string from, string to, LogLevel minLevel) : base(minLevel)
+        private SmtpLogger(SmtpClient client, string from, string to, LogLevel minLevel) : base(minLevel)
         {
             this.client = client;
             this.from = from;
@@ -28,7 +28,7 @@ namespace FluentLogger.Smtp
         /// <param name="from">The email address your sending from</param>
         /// <param name="to">The email address your sending to</param>
         /// <param name="minLevel">The minimum log level threshold</param>
-        /// <param name="sourceSite">(optional) but recommended.  If you have more than one server it's nice to know which site reported this message.</param>
+        /// <param name="sourceSite">If you have more than one server/instance it's nice to know which site reported this message.</param>
         public SmtpLogger(SmtpClient client, string from, string to, LogLevel minLevel, string sourceSite) : this(client, from, to, minLevel)
         {
             this.sourceSite = sourceSite;
