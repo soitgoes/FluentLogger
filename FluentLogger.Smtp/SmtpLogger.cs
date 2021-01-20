@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq; 
 using System.Net.Mail;
 using FluentLogger.Interfaces;
 
@@ -48,9 +49,9 @@ namespace FluentLogger.Smtp
         {
             lock (lockObj)
             {
-                message = string.IsNullOrEmpty(message) ? ex?.Message : message; 
+                message = string.IsNullOrEmpty(message) ? ex?.Message : message + " - " +ex?.Message; 
                 string subject = $"[{level.ToString()}] {Environment.MachineName}/{sourceSite} - {message}";
-                string body = $"[{level.ToString()}] - {message}";
+                string body = $"[{level.ToString()}] - {message}<br />";
                 if (sendAction != null)
                 {
                     sendAction(subject, body);
@@ -65,6 +66,10 @@ namespace FluentLogger.Smtp
                 if (ex != null)
                 {
                     mesg.Body += "<br />" + ex.StackTrace;
+                }
+                if (objects != null)
+                {
+                    mesg.Body += "<br />" + string.Join("<br />", objects.Select(x => x.ToString()));
                 }
 
                 //presently not supporting object serialization
