@@ -21,8 +21,9 @@ namespace FluentLogger
         private readonly object hold = new object();
         private readonly string filename;
         private readonly string filePath;
-        private readonly StringBuilder sb;
-        private readonly StreamWriter sw;
+        private StringBuilder sb;
+        private FileStream fs;
+        private StreamWriter sw;
         /// <summary>
         /// </summary>
         /// <param name="logDirectory"></param>
@@ -45,15 +46,23 @@ namespace FluentLogger
             this.prefix = filenamePrefix ?? $"log-{pid}";
             this.filename = $"{prefix}.current.txt";
             this.filePath = Path.Combine(logDirectory, filename);
+
+            InitStream();
+            RecordHeader();
+        }
+
+        public void InitStream()
+        { 
             this.sb = new StringBuilder();
+            this.fs = new FileStream(this.filePath, FileMode.Append, FileAccess.Write, FileShare.Read);
             this.sw = new StreamWriter(this.filePath);
             TextWriter.Synchronized(this.sw);
-            RecordHeader();
         }
         public override void Dispose()
         {
             this.sw.Flush();
             this.sw.Dispose();
+            this.fs.Dispose();
             base.Dispose();
         }
 
@@ -107,6 +116,8 @@ namespace FluentLogger
         /// </summary>
         private void RollLogs()
         {
+            this.sw.Flush();
+            this.sw.Dispose();
             var files = Directory.GetFiles(logDirectory, $"{prefix}.*.txt");
             var dict = new Dictionary<int, string>();
             foreach (var file in files)
@@ -141,7 +152,7 @@ namespace FluentLogger
                 var target = Path.Combine(logDirectory, $"{prefix}.1.txt");
 
                 File.Move(this.filePath, target);
-
+                InitStream();
             }
             RecordHeader();
 
