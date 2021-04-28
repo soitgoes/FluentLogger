@@ -55,14 +55,14 @@ namespace FluentLogger
         { 
             this.sb = new StringBuilder();
             this.fs = new FileStream(this.filePath, FileMode.Append, FileAccess.Write, FileShare.Read);
-            this.sw = new StreamWriter(this.filePath);
+            this.sw = new StreamWriter(this.fs);
             TextWriter.Synchronized(this.sw);
         }
         public override void Dispose()
         {
-            this.sw.Flush();
-            this.sw.Dispose();
-            this.fs.Dispose();
+            this.sw?.Flush();
+            this.sw?.Dispose();
+            this.fs?.Dispose();
             base.Dispose();
         }
 
