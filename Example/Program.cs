@@ -35,7 +35,7 @@ namespace Example
                 }catch(Exception ex)
                 {
                     logger.Trace("Test Serialization", new { Name = "name" });
-                    logger.Fatal("Fatal Error", ex);
+                    logger.Fatal("Fatal Error", ex, "test1", new { FirstName = "Bart Simpson" });
                 }
 
                 break;

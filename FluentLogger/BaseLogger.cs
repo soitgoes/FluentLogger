@@ -49,7 +49,7 @@ namespace FluentLogger
         public static string GetDate()
         {
             var utcOffset = TimeZoneInfo.Local.GetUtcOffset(DateTime.Now);
-            return DateTime.UtcNow.ToString("HH:mm:ss") +  " UTC, " + DateTime.Now.ToShortTimeString() + " " + TimeZoneInfo.Local.DisplayName;
+            return DateTime.UtcNow.ToString("yyyy-MM-dd") + " " + DateTime.UtcNow.ToString("HH:mm:ss") +  " UTC, " + DateTime.Now.ToShortTimeString() + " " + TimeZoneInfo.Local.DisplayName;
         }
         public static string Serialize(object obj)
         {
