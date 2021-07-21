@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FluentLogger\FluentLogger.csproj" />
+    <ProjectReference Include="..\FluentLogger.CloudWatch\FluentLogger.CloudWatch.csproj" />
   </ItemGroup>
 
 </Project>

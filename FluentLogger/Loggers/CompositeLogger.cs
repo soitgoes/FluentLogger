@@ -32,8 +32,9 @@ namespace FluentLogger
                 {
                     logger.Record(level, message, ex, objectsToSerialize);
                 }
-                catch (Exception)
+                catch (Exception loggingEx)
                 {
+                    Console.WriteLine($"Logging failed: {loggingEx}");
                     //Nothing to do log failure
                 }
             }
