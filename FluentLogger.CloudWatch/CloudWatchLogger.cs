@@ -33,33 +33,93 @@ namespace FluentLogger.CloudWatch
 
         public async Task RecordAsync(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
         {
-            
             var logEvents = new List<InputLogEvent>();
 
-            message = $"[{level}] " + message + "\n" + (ex?.StackTrace ?? "") +  objectsToSerialize.Select(o => Serialize(o) + "\n");
+            var objs = objectsToSerialize == null || objectsToSerialize.Count() == 0;
+            message = $"[{level}] " + message + "\n" + ex?.Message + "\n" + (ex?.StackTrace ?? "") + (objs ? objectsToSerialize.Select(o => Serialize(o) + "\n").ToString() : "");
 
             logEvents.Add(new InputLogEvent { Message = message, Timestamp = DateTime.Now });
 
+            try
+            {
+                using (var logs = new AmazonCloudWatchLogsClient(accessKey, secret, region))
+                {
+                    var logStream = await GetLogStream();
+
+                    if (logStream != null)
+                        await PutLogs(logEvents, logStream.UploadSequenceToken);
+                    else
+                    {
+                        await CreateLogStream();
+                        logStream = await GetLogStream();
+                        await PutLogs(logEvents, logStream?.UploadSequenceToken);
+                    }
+                }
+            }
+            catch (LimitExceededException)
+            {
+                // limit exceeded, not sure how to deal with this edge case
+                Console.WriteLine($"(Limit Exceeded) Attempted to log message: " + message);
+            }
+            catch (InvalidSequenceTokenException _ex)
+            {
+                try
+                {
+                    // use the expected token
+                    await PutLogs(logEvents, _ex.ExpectedSequenceToken);
+                }
+                catch (InvalidSequenceTokenException __ex)
+                { // try one more time...
+                    await PutLogs(logEvents, __ex.ExpectedSequenceToken);
+                    Console.WriteLine($"(LoggingException) Exception: " + __ex.Message);
+                }
+            }
+            catch (Exception _ex)
+            {
+                Console.WriteLine($"(LoggingException) Attempted to log message: " + message);
+                Console.WriteLine($"(LoggingException) Exception: " + _ex.Message);
+            }
+        }
+
+        public async Task<LogStream> GetLogStream()
+        {
+            var streams = await DescribeLogStreams();
+            return streams.FirstOrDefault(ls => ls.LogStreamName == logStreamName);
+        }
+
+        public async Task<List<LogStream>> DescribeLogStreams()
+        {
             using (var logs = new AmazonCloudWatchLogsClient(accessKey, secret, region))
             {
-                var request = new PutLogEventsRequest(groupName, logStreamName, logEvents);
-
                 var describeLogStreamsRequest = new DescribeLogStreamsRequest(groupName);
+                describeLogStreamsRequest.Descending = true;
                 var describeLogStreamsResponse = await logs.DescribeLogStreamsAsync(describeLogStreamsRequest);
-                var logStreams = describeLogStreamsResponse.LogStreams;
-                var logStream = logStreams.FirstOrDefault(ls => ls.LogStreamName == logStreamName);
-                if (logStream != null)
-                {
-                    var token = logStream.UploadSequenceToken;
-                    request.SequenceToken = token;
-                    await logs.PutLogEventsAsync(request);
-                }
-                else
+                //System.Net.HttpStatusCode.
+                return describeLogStreamsResponse.LogStreams;
+            }
+        }
+
+        public async Task<CreateLogStreamResponse> CreateLogStream()
+        {
+            try
+            {
+                using (var logs = new AmazonCloudWatchLogsClient(accessKey, secret, region))
                 {
                     var createRequest = new CreateLogStreamRequest(groupName, logStreamName);
-                    await logs.CreateLogStreamAsync(createRequest);
-                    await logs.PutLogEventsAsync(request);
+                    return await logs.CreateLogStreamAsync(createRequest);
                 }
+            }
+            catch (ResourceAlreadyExistsException) { return null; }
+        }
+
+        public async Task<PutLogEventsResponse> PutLogs(List<InputLogEvent> logEvents, string token)
+        {
+            var request = new PutLogEventsRequest(groupName, logStreamName, logEvents);
+            request.SequenceToken = token;
+
+            using (var logs = new AmazonCloudWatchLogsClient(accessKey, secret, region))
+            {
+                return await logs.PutLogEventsAsync(request);
             }
         }
     }
