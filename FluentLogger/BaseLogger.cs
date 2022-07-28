@@ -1,6 +1,7 @@
 ﻿using FluentLogger.Interfaces;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -58,7 +59,7 @@ namespace FluentLogger
                 if (obj == null) return "null";
                 var result = "";
 
-                if (obj is IEnumerable)
+                if (obj is IEnumerable && !(obj is string))
                 {
                     foreach (var item in (IEnumerable)obj)
                     {
@@ -81,9 +82,14 @@ namespace FluentLogger
         {
             string result = "";
             var t = obj.GetType();
-            if (obj is string)
+            //The primitive types are Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, and Single.
+            var primitives = new List<Type> {
+                typeof(int), typeof(string), typeof(String),
+                typeof(Boolean), typeof(Byte), typeof(SByte), typeof(Int16), typeof(UInt16), typeof(UInt32), typeof(UInt64), typeof(UIntPtr), typeof(Char), typeof(Double), typeof(Single)
+            };
+            if (primitives.Contains(t))
             {
-                result += "\t\t\"" + obj + "\" : " + " [System.String]" +
+                result += "\t\t" + obj + " : " + $" [{t.Name}]" +
                           Environment.NewLine;
             }
             else

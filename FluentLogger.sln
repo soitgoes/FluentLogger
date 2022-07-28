@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLuentLogger.Api", "FLuentL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentLogger.Console", "FluentLogger.Console\FluentLogger.Console.csproj", "{D44B3FDC-E799-473D-AA3A-8D4820298527}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpikeAws", "SpikeAws\SpikeAws.csproj", "{5725BA1B-FEFD-4212-9038-5D9163D286E1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentLogger.CloudWatch", "FluentLogger.CloudWatch\FluentLogger.CloudWatch.csproj", "{4ED37B0D-E984-49AD-BDE1-7D234713D95B}"
 EndProject
 Global

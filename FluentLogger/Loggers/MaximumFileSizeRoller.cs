@@ -179,7 +179,7 @@ namespace FluentLogger
                 sw.Flush();
                 sb.Clear();
             }
-            catch (Exception ex1)
+            catch (Exception)
             {
                 //Nothing to do write to file isn't working
             }

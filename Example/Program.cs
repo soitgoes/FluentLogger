@@ -28,7 +28,7 @@ namespace Example
             int i = 0;
                 while (i++ < 20)
                 {
-
+                logger.Info("Primative", i);
                 try
                 {
                     throw new Exception("Thrown for your delight");
