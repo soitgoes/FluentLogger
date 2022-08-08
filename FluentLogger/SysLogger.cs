@@ -2,8 +2,7 @@
 using SyslogNet.Client.Serialization;
 using SyslogNet.Client.Transport;
 using System;
-
-
+using System.IO;
 
 namespace FluentLogger
 {

@@ -22,7 +22,7 @@ namespace FluentLogger
         private readonly string filename;
         private readonly string filePath;
         private StringBuilder sb;
-        private FileStream fs;
+        private Stream fs;
         private StreamWriter sw;
         /// <summary>
         /// </summary>
@@ -54,7 +54,7 @@ namespace FluentLogger
         public void InitStream()
         { 
             this.sb = new StringBuilder();
-            this.fs = new FileStream(this.filePath, FileMode.Append, FileAccess.Write, FileShare.Read);
+            this.fs = new BufferStream(new FileStream(this.filePath, FileMode.Append, FileAccess.Write, FileShare.Read));
             this.sw = new StreamWriter(this.fs);
             TextWriter.Synchronized(this.sw);
         }
@@ -176,8 +176,8 @@ namespace FluentLogger
                 var logLine = Format(message, level, ex, objectsToSerialize);
                 sb.Append(logLine);
                 sw.Write(sb.ToString());
-                sw.Flush();
                 sb.Clear();
+                
             }
             catch (Exception)
             {

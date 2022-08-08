@@ -20,27 +20,34 @@ namespace Example
                 //Daily is deprecated, use MaximumFileSizeRoller instead
                 //new DailyLogRoller(@"DailyLogRoller", LogLevel.Trace),
                 new MaximumFileSizeRoller(userLogDir, LogLevel.Trace, headerFx, false, 2, 3, "log")
-                ,new ConsoleLogger(LogLevel.Trace)
-                ,new SmtpLogger(smtpClient, "errors@fluentlogger.com", "support@somewhere.com", LogLevel.Critical, "WFE01")
+                , new ConsoleLogger(LogLevel.Trace)
+            // ,new SmtpLogger(smtpClient, "errors@fluentlogger.com", "support@somewhere.com", LogLevel.Critical, "WFE01")
             );
-            var logger = LogFactory.GetLogger();
-
-            int i = 0;
+            using (var logger = LogFactory.GetLogger())
+            {
+                int i = 0;
                 while (i++ < 20)
                 {
-                logger.Info("Primative", i);
-                try
-                {
-                    throw new Exception("Thrown for your delight");
-                }catch(Exception ex)
-                {
-                    logger.Trace("Test Serialization", new { Name = "name" });
-                    logger.Fatal("Fatal Error", ex, "test1", new { FirstName = "Bart Simpson" });
+                    logger.Info("Primative", i);
+                    try
+                    {
+                        throw new Exception("Thrown for your delight");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Trace("Test Serialization", new { Name = "name" });
+                        logger.Error(ex.Message, ex);
+                    }
+
+                    break;
+                    //   Thread.Sleep(10);
                 }
 
-                break;
-                 //   Thread.Sleep(10);
-                }
+            }
+            
+
+
+                
             
             
             

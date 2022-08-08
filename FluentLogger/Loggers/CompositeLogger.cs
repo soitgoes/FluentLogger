@@ -12,7 +12,10 @@ namespace FluentLogger
         {
             this.loggers.AddRange(loggers);
         }
-
+        public override void Dispose()
+        {
+            foreach (var logger in this.loggers) logger.Dispose();
+        }
         public void AddLogger(BaseLogger logger)
         {
             this.loggers.Add(logger);
