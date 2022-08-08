@@ -36,7 +36,7 @@ namespace FluentLogger.CloudWatch
             var logEvents = new List<InputLogEvent>();
 
             var hasObjs = objectsToSerialize != null && objectsToSerialize.Count() > 0;
-            message = $"[{level}] " + message + "\n" + ex?.Message + "\n" + (ex?.StackTrace ?? "") + (hasObjs ? objectsToSerialize.Select(o => Serialize(o) + "\n").ToString() : "");
+            message = $"[{level}] " + message + "\n" + ex?.Message + "\n" + (ex?.StackTrace ?? "") + (hasObjs ? string.Join("\n", objectsToSerialize.Select(Serialize).ToString()) : "");
 
             logEvents.Add(new InputLogEvent { Message = message, Timestamp = DateTime.Now });
 
