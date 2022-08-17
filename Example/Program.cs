@@ -35,7 +35,7 @@ namespace Example
                     }
                     catch (Exception ex)
                     {
-                        logger.Trace("Test Serialization", new { Name = "name" });
+                        logger.Warn("Test Serialization", ex, new { Name = "name" }, null, "Just a plain ole string");
                         logger.Error(ex.Message, ex);
                     }
 
@@ -44,7 +44,7 @@ namespace Example
                 }
 
             }
-            
+            Console.ReadLine();
 
 
                 
