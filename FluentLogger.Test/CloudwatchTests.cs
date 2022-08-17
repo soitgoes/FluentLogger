@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentLogger.CloudWatch;
 
 namespace FluentLogger.Test
 {
@@ -27,8 +28,8 @@ namespace FluentLogger.Test
         public CloudwatchTests()
         {
             region = RegionEndpoint.USEast2;
-            groupName = "GroupTest";
-            streamName = "test-stream";
+            groupName = ""; // modify to existing group
+            streamName = ""; // modify to existing stream
 
             cloudWatchLogger = new CloudWatch.CloudWatchLogger(LogLevel.Info, accessKey, secretKey, region, groupName, streamName);
         }
@@ -58,6 +59,27 @@ namespace FluentLogger.Test
             stream.UploadSequenceToken);
 
             Assert.AreEqual("OK", result.HttpStatusCode.ToString());
+        }
+
+        [Test]
+        public async Task TestLogFactory()
+        {
+            /*LogFactory.Init();
+            LogFactory.AddLogger(
+                                    new CloudWatchLogger(LogLevel.Info,
+                                    accessKey,
+                                    secretKey,
+                                    Amazon.RegionEndpoint.GetBySystemName("us-east-2"),
+                                    groupName,
+                                    streamName
+                                    ));
+            var logger = LogFactory.GetLogger();
+            logger.Warn("Message", ex, null, "Any String", new { FirstName = "Wes" });*/
+            var ex = new Exception("Fake exception");
+            cloudWatchLogger.Warn("Clean message");
+            cloudWatchLogger.Warn("Cloudwatch Testing Stack", ex, null, "Any String", new { FirstName = "Wes" }, new { LastName = "Hendon" });
+
+            Assert.True(true); // you must check cloudwatch to see if it worked
         }
     }
 }
