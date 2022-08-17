@@ -35,11 +35,19 @@ namespace FluentLogger.CloudWatch
         {
             var logEvents = new List<InputLogEvent>();
 
-            var objs = objectsToSerialize == null || objectsToSerialize.Count() == 0;
-            message = $"[{level}] " + message + "\n" + ex?.Message + "\n" + (ex?.StackTrace ?? "") + (objs ? objectsToSerialize.Select(o => Serialize(o) + "\n").ToString() : "");
+            try
+            {
+                var objs = objectsToSerialize == null || objectsToSerialize.Any();
+                message = $"[{level}] " + message + "\n" + ex?.Message + "\n" + (ex?.StackTrace ?? "") + (objs ? string.Join("\n", objectsToSerialize.Select(o => Serialize(o)).ToList()) : "");
 
-            logEvents.Add(new InputLogEvent { Message = message, Timestamp = DateTime.Now });
+                logEvents.Add(new InputLogEvent { Message = message, Timestamp = DateTime.Now });
+            }
+            catch (Exception _ex)
+            {
+                logEvents.Add(new InputLogEvent { Message = "Failed to build msg\n" + ex?.Message, Timestamp = DateTime.Now });
+            }
 
+            PutLogEventsResponse putResult = null;
             try
             {
                 using (var logs = new AmazonCloudWatchLogsClient(accessKey, secret, region))
@@ -47,12 +55,12 @@ namespace FluentLogger.CloudWatch
                     var logStream = await GetLogStream();
 
                     if (logStream != null)
-                        await PutLogs(logEvents, logStream.UploadSequenceToken);
+                        putResult = await PutLogs(logEvents, logStream.UploadSequenceToken);
                     else
                     {
                         await CreateLogStream();
                         logStream = await GetLogStream();
-                        await PutLogs(logEvents, logStream?.UploadSequenceToken);
+                        putResult = await PutLogs(logEvents, logStream?.UploadSequenceToken);
                     }
                 }
             }
@@ -66,11 +74,11 @@ namespace FluentLogger.CloudWatch
                 try
                 {
                     // use the expected token
-                    await PutLogs(logEvents, _ex.ExpectedSequenceToken);
+                    putResult = await PutLogs(logEvents, _ex.ExpectedSequenceToken);
                 }
                 catch (InvalidSequenceTokenException __ex)
                 { // try one more time...
-                    await PutLogs(logEvents, __ex.ExpectedSequenceToken);
+                    putResult = await PutLogs(logEvents, __ex.ExpectedSequenceToken);
                     Console.WriteLine($"(LoggingException) Exception: " + __ex.Message);
                 }
             }
@@ -79,6 +87,8 @@ namespace FluentLogger.CloudWatch
                 Console.WriteLine($"(LoggingException) Attempted to log message: " + message);
                 Console.WriteLine($"(LoggingException) Exception: " + _ex.Message);
             }
+
+            var myResult = putResult;
         }
 
         public async Task<LogStream> GetLogStream()
