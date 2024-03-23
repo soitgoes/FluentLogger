@@ -18,6 +18,7 @@ namespace FluentLogger
             get { return minLevel; }
             set { minLevel = value; }
         }
+        public virtual void Flush() { }
 
         protected LogLevel minLevel;
 
@@ -96,8 +97,17 @@ namespace FluentLogger
             {
                 foreach (var prop in t.GetProperties())
                 {
-                    result += "\t\t" + prop.Name + " : " + prop.GetValue(obj) + " [" + prop.PropertyType.ToString() + "]" +
+                    if (prop.PropertyType is IEnumerable)
+                    {
+                        IEnumerable val = (IEnumerable)prop.GetValue(obj, null);
+                        var str = "\"" + string.Join("\",\"", val) + "\"";
+                        result += "\t\t" + prop.Name + $" : [{str}]";
+                    }
+                    else
+                    {
+                        result += "\t\t" + prop.Name + " : " + prop.GetValue(obj) + " [" + prop.PropertyType.ToString() + "]" +
                               Environment.NewLine;
+                    }
                 }
             }
             return result;

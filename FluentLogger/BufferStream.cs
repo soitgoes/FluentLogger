@@ -1,63 +1,68 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace FluentLogger
 {
-    public class BufferStream : Stream, IDisposable
+    public class BufferWriter : IDisposable
     {
-        private readonly Stream _stream;
-        private MemoryStream _ms = new MemoryStream();
+        private StreamWriter sw;
+        private MemoryStream ms = new MemoryStream();
+        private readonly string filePath;
+        private readonly int modWrite;
+        private int countDown;
+        private object hold = new object();
 
-        public BufferStream(Stream stream)
+        public BufferWriter(string filePath, int modWrite=5)
         {
-            _stream = stream;
+            sw = new StreamWriter(ms, Encoding.UTF8);
+            this.filePath = filePath;
+            this.modWrite = modWrite;
+            this.countDown = modWrite;
         }
 
-        public override bool CanRead => _ms.CanRead;
 
-        public override bool CanSeek => _ms.CanSeek;
-
-        public override bool CanWrite => _ms.CanWrite;
-
-        public override long Length => _ms.Length;
-
-        public override long Position { get => _ms.Position; set => _ms.Position = value; }
-
-        public new void Dispose()
+        public void Dispose()
         {
             Flush();
-            _stream.Dispose();
-            _ms.Dispose();
+            sw.Dispose();
+            ms.Dispose();
         }
-
-        public override void Flush()
+        public void Append(string s)
         {
-            _ms.Seek(0, SeekOrigin.Begin);
-            _ms.CopyTo(_stream);
-            _ms.SetLength(0);
-            _stream.Flush();
+            try
+            {
+                sw.Write(s);
+            } catch (OutOfMemoryException ex)
+            {
+                Flush();
+                sw.Write("Out of memory exception", ex.Message);
+            }
+
+            
+            if (--countDown <= 0)
+            {
+                Flush();
+                countDown = modWrite;
+            }
         }
-
-        public override int Read(byte[] buffer, int offset, int count)
+        public void Flush()
         {
-            return _ms.Read(buffer, offset, count);
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            return _ms.Seek(offset, origin);
-        }
-
-        public override void SetLength(long value)
-        {
-            _ms.SetLength(value);
-        }
-
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            _ms.Write(buffer, offset, count);
-            if (_ms.Length > 10000)
-                this.Flush();
+            lock (hold)
+            {
+                using (var fs = File.Open(this.filePath, FileMode.Append, FileAccess.Write))
+                {
+                    sw.Flush();
+                    ms.Flush();
+                    ms.Seek(0, SeekOrigin.Begin);
+                    ms.CopyTo(fs);
+                    ms.Dispose();
+                    ms = new MemoryStream();
+                    sw.Dispose();
+                    sw = new StreamWriter(ms);
+                }
+            }
+            
         }
     }
 }

@@ -16,6 +16,10 @@ namespace FluentLogger
         {
             foreach (var logger in this.loggers) logger.Dispose();
         }
+        public override void Flush()
+        {
+            foreach (var logger in this.loggers) logger.Flush();
+        }
         public void AddLogger(BaseLogger logger)
         {
             this.loggers.Add(logger);

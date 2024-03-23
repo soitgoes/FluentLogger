@@ -21,9 +21,7 @@ namespace FluentLogger
         private readonly object hold = new object();
         private readonly string filename;
         private readonly string filePath;
-        private StringBuilder sb;
-        private Stream fs;
-        private StreamWriter sw;
+        private BufferWriter bw;
         /// <summary>
         /// </summary>
         /// <param name="logDirectory"></param>
@@ -53,19 +51,19 @@ namespace FluentLogger
 
         public void InitStream()
         { 
-            this.sb = new StringBuilder();
-            this.fs = new BufferStream(new FileStream(this.filePath, FileMode.Append, FileAccess.Write, FileShare.Read));
-            this.sw = new StreamWriter(this.fs);
-            TextWriter.Synchronized(this.sw);
+            this.bw = new BufferWriter(this.filePath);
+            
         }
+        
         public override void Dispose()
         {
-            this.sw?.Flush();
-            this.sw?.Dispose();
-            this.fs?.Dispose();
-            base.Dispose();
+            this.bw?.Flush();
+            this.bw?.Dispose();
         }
-
+        public override void Flush()
+        {
+            this.bw?.Flush();
+        }
         /// <summary>
         /// If directory doesn't exist attempt to create and fail silent if we can't 
         /// </summary>
@@ -116,8 +114,8 @@ namespace FluentLogger
         /// </summary>
         private void RollLogs()
         {
-            this.sw.Flush();
-            this.sw.Dispose();
+            
+            
             var files = Directory.GetFiles(logDirectory, $"{prefix}.*.txt");
             var dict = new Dictionary<int, string>();
             foreach (var file in files)
@@ -127,7 +125,7 @@ namespace FluentLogger
                 int number = int.Parse(parts[parts.Length - 2]);
                 dict.Add(number, new FileInfo(file).Name);
             }
-
+            this.Dispose();
             foreach (var number in dict.Keys.OrderByDescending(x => x))
             {
                 if (number >= numberOfFilesToKeep)
@@ -159,7 +157,7 @@ namespace FluentLogger
         }
         public void RecordHeader()
         {
-            this.sb.AppendLine($"-------{logHeader()}-------" + Environment.NewLine);
+            this.bw.Append($"-------{logHeader()}-------" + Environment.NewLine);
         }
 
         public override void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize)
@@ -174,12 +172,9 @@ namespace FluentLogger
                 }
 
                 var logLine = Format(message, level, ex, objectsToSerialize);
-                sb.Append(logLine);
-                sw.Write(sb.ToString());
-                sb.Clear();
-                
+                bw.Append(logLine);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //Nothing to do write to file isn't working
             }

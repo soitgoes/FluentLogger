@@ -29,8 +29,10 @@ namespace Example
                 while (i++ < 20)
                 {
                     logger.Info("Primative", i);
+                    logger.Info("message", new Widget());
                     try
                     {
+                        
                         throw new Exception("Thrown for your delight");
                     }
                     catch (Exception ex)

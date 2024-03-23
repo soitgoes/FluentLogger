@@ -4,6 +4,7 @@ namespace FluentLogger.Interfaces
 {
     public interface ILog :IDisposable
     {
+        void Flush();
         void Record(LogLevel level, string message, Exception ex = null, params object[] objectsToSerialize);
         bool IsEnabled(LogLevel level);
 
