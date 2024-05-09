@@ -16,7 +16,7 @@ namespace FluentLogger
     [Obsolete("Use MaximumFileSizeRoller Instead")]
     public class DailyLogRoller : BaseLogger
     {
-        protected object hold = new object();
+        protected static object hold = new object();
         protected static string logDirectory = Path.Combine(Environment.CurrentDirectory, "Logs");
         protected static string filePath = null;
         protected int counter = 0;

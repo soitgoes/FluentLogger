@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace FluentLogger
 {
@@ -11,7 +12,7 @@ namespace FluentLogger
         private readonly string filePath;
         private readonly int modWrite;
         private int countDown;
-        private object hold = new object();
+        private readonly Mutex writerMutex = new Mutex();
 
         public BufferWriter(string filePath, int modWrite=5)
         {
@@ -48,8 +49,9 @@ namespace FluentLogger
         }
         public void Flush()
         {
-            lock (hold)
+            try
             {
+                writerMutex.WaitOne(700);
                 using (var fs = File.Open(this.filePath, FileMode.Append, FileAccess.Write))
                 {
                     sw.Flush();
@@ -61,6 +63,10 @@ namespace FluentLogger
                     sw.Dispose();
                     sw = new StreamWriter(ms);
                 }
+            }
+            finally
+            {
+                writerMutex.ReleaseMutex();
             }
             
         }

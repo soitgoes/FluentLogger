@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FluentLogger
@@ -13,6 +14,7 @@ namespace FluentLogger
     /// </summary>
     public class MaximumFileSizeRoller : BaseLogger, IDisposable
     {
+        private static readonly Mutex rollMutex = new Mutex();
         private readonly string logDirectory;
         private readonly Func<string> logHeader;
         private readonly int maximumBytesPerFile;
@@ -50,11 +52,11 @@ namespace FluentLogger
         }
 
         public void InitStream()
-        { 
+        {
             this.bw = new BufferWriter(this.filePath);
-            
+
         }
-        
+
         public override void Dispose()
         {
             this.bw?.Flush();
@@ -114,46 +116,47 @@ namespace FluentLogger
         /// </summary>
         private void RollLogs()
         {
-            
-            
-            var files = Directory.GetFiles(logDirectory, $"{prefix}.*.txt");
-            var dict = new Dictionary<int, string>();
-            foreach (var file in files)
+            try
             {
-                if (file.Contains("current")) continue;
-                var parts = file.Split('.');
-                int number = int.Parse(parts[parts.Length - 2]);
-                dict.Add(number, new FileInfo(file).Name);
-            }
-            this.Dispose();
-            foreach (var number in dict.Keys.OrderByDescending(x => x))
-            {
-                if (number >= numberOfFilesToKeep)
+                rollMutex.WaitOne(1000);
+                var files = Directory.GetFiles(logDirectory, $"{prefix}.*.txt");
+                var dict = new Dictionary<int, string>();
+                foreach (var file in files)
                 {
-                    var pathToDelete = Path.Combine(logDirectory, dict[number]);
-                    lock (hold)
+                    if (file.Contains("current")) continue;
+                    var parts = file.Split('.');
+                    int number = int.Parse(parts[parts.Length - 2]);
+                    dict.Add(number, new FileInfo(file).Name);
+                }
+                this.Dispose();
+                foreach (var number in dict.Keys.OrderByDescending(x => x))
+                {
+                    if (number >= numberOfFilesToKeep)
                     {
+                        var pathToDelete = Path.Combine(logDirectory, dict[number]);
                         if (File.Exists(pathToDelete))
                             File.Delete(pathToDelete);
                     }
-                }
-                var src = Path.Combine(logDirectory, dict[number]);
-                var target = Path.Combine(logDirectory, $"{prefix}.{number + 1}.txt");
-                lock (hold)
-                {
+                    var src = Path.Combine(logDirectory, dict[number]);
+                    var tar = Path.Combine(logDirectory, $"{prefix}.{number + 1}.txt");
+
                     if (File.Exists(src))
-                        File.Move(src, target);
+                        File.Move(src, tar);
                 }
-            }
-            lock (hold)
-            {
+
                 var target = Path.Combine(logDirectory, $"{prefix}.1.txt");
 
                 File.Move(this.filePath, target);
                 InitStream();
-            }
-            RecordHeader();
+                RecordHeader();
 
+            }
+            finally
+            {
+                rollMutex.ReleaseMutex();
+            }
+
+            
         }
         public void RecordHeader()
         {

@@ -10,7 +10,7 @@ namespace FluentLogger.Smtp
         private readonly SmtpClient client;
         private readonly string from;
         private readonly string to;
-        private readonly object lockObj = new object();
+        private static readonly object lockObj = new object();
         private readonly Action<string, string> sendAction;
         private readonly string sourceSite;
 
